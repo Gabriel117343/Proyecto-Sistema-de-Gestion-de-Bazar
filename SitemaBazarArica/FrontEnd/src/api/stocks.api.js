@@ -10,7 +10,7 @@ export const getAllStocks = (token) => {
     }
   })
 }
-export const getStock = (id, token) => {
+export const getStock = (id, token) => { // id del stock
   return stocksApi.get(`/${id}/`, {
     headers: {
       Authorization: `Token ${token}`
