@@ -1,0 +1,29 @@
+.imagen-perfil {
+  width: 260px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/* Estilos para Cambiar la contraseña-------------------------------------- */
+.contraseña-cont {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.contraseña-cont .icon{
+  position: absolute;
+  top: 77%;
+  right: 10px; /* Ajusta la posición del ícono */
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: rgb(124, 124, 124);
+ 
+}
+.card-diseño {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 0 auto;
+  margin-top: 30px;
+}

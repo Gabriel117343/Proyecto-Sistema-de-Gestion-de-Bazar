@@ -1,0 +1,63 @@
+
+@keyframes escalar {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes parpadeo {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.animacion-i:hover i { /*Animacion personalizada para el parpadeo de los iconos sun y moon de la tabla*/
+  color: red;
+  animation: parpadeo 0.5s linear infinite;
+}
+.animacion-boton:hover {
+  
+  transform: scale(1.05);
+}
+.animacion-i:hover th { /*Animacion personalizada para el parpadeo de los iconos sun y moon de la tabla*/
+  
+  animation: parpadeo 0.5s linear infinite;
+}
+.estilo-boton {
+  background: red;
+}
+.usuario-imagen {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+/*--------------------ESTILOS DE EL PARA EL FORMULARIO-------------------*/
+.advertencia {
+  height: 1rem;
+}
+.contraseña-container {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+}
+
+.contraseña-container .icon {
+  position: absolute;
+  top: 69%;
+  right: 10px; /* Ajusta la posición del ícono */
+  transform: translateY(-50%);
+  cursor: pointer;
+ 
+}
+.contraseña-container .icon svg {
+  font-size: 16px; /* Ajusta el tamaño del ícono*/
+  color: #888; /* Ajusta el color del ícono*/
+}

@@ -1,0 +1,53 @@
+.sidebar {
+  background-color: #150916;
+  color: white;
+  height: 100vh;
+  width: 300px;
+  transition: all 0.5;
+}
+.top_seccion {
+  display: flex;
+  align-items: center;
+  padding: 20px 15px;
+}
+.bars {
+  display: flex;
+  font-size: 25px;
+  margin-left: 30px;
+}
+.link {
+  display: flex;
+  color: white;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
+}
+.link:hover {
+  background-color: rgb(206, 151, 34);
+  color: white;
+  text-decoration: none;
+}
+.active {
+  background-color: rgb(42, 152, 226);
+  color: white;
+}
+.icon, .link_text {
+  font-size: 20px;
+}
+
+.contenedor {
+
+  height: 100vh;
+  display: flex;
+
+}
+main {
+  width: 100%;
+}
+.nombre-usuario::after {
+  content: "";
+  border: white solid 1px;
+  border-radius: 50%;
+  width: 10px;
+  display: flex;
+}

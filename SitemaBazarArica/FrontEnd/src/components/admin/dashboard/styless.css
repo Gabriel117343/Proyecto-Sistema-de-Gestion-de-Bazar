@@ -1,0 +1,33 @@
+.tamaño-card {
+  height: 120px;
+  width: 380px;
+}
+.icono-dash {
+  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+.contenedor-icono {
+  background: red;
+  border-radius: 10px;
+  width: 100px;
+  height: 100px;
+  margin: 0;
+  color: white;
+}
+div.color-card-1 {
+  background: rgb(206, 151, 34);
+
+}
+div.color-card-2 {
+  background: rgb(206, 34, 34);
+}
+div.color-card-3 {
+  background: rgb(59, 160, 19);
+}
+div.color-card-4 {
+  background: rgb(34, 34, 206);
+}
