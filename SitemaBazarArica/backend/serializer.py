@@ -44,14 +44,24 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Cliente para serializar los datos
         model = Cliente
         fields = '__all__'
-class PedidoSerializer(serializers.ModelSerializer):
-    class Meta: # metadatos del modelo Pedido para serializar los datos
-        model = Pedido
-        fields = '__all__'
+
 class ProductoPedidoSerializer(serializers.ModelSerializer):
-    class Meta: # metadatos del modelo ProductoPedido para serializar los datos
+    class Meta:
         model = ProductoPedido
-        fields = '__all__'
+        fields = ['producto', 'cantidad', 'precio']
+class PedidoSerializer(serializers.ModelSerializer):
+    productos = ProductoPedidoSerializer(many=True)
+    proveedor = ProveedorSerializer(read_only=True)
+
+    class Meta:
+        model = Pedido
+        fields = ['proveedor', 'usuario', 'fecha_pedido', 'estado', 'total', 'productos', 'codigo', 'observacion']
+        def create(self, validated_data):
+            productos_data = validated_data.pop('productos')
+            pedido = Pedido.objects.create(**validated_data)
+            for producto_data in productos_data:
+                ProductoPedido.objects.create(pedido=pedido, **producto_data)
+            return pedido
 class DescuentoSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Descuento para serializar los datos
         model = Descuento

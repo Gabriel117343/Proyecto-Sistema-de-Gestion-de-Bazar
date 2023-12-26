@@ -16,6 +16,7 @@ import { Usuarios } from '../pages/admin/Usuarios'
 import { Configuracion } from '../pages/admin/Configuracion'
 import { UsuariosProvider } from '../context/UsuariosContext'
 import { SeccionesProvider } from '../context/SeccionesContext'
+
 import { Secciones } from '../pages/admin/Secciones'
 // MENU DE OPCIONES PARA EL ADMINISTRADOR
 import { Menu } from '../components/admin/Menu'
