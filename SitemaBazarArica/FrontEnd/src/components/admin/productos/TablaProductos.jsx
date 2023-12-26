@@ -59,6 +59,8 @@ const MostrarProductos = ({ listaProductos, borrarProducto, edicionProducto, fil
                 : <div style={{borderRadius: '35px'}} className='border d-flex d-flex justify-content-center bg-danger text-white'><p className='m-0'>Inactivo</p></div>}</td>
                 <td className='text-center'><button className='btn btn-info' onClick={() => edicionProducto(producto.id)}><i className='bi bi-pencil-square'></i></button></td>
                 <td className='text-center'><button className='btn btn-danger' onClick={() => borrarProducto(producto.id)}><i className='bi bi-trash'></i></button></td>
+
+
               </tr>
             ))}
           </MagicMotion>

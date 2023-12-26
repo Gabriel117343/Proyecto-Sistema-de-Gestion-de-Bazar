@@ -212,9 +212,6 @@ export const FormRegistroUsuarios = ({ cerrarModal }) => {
           <form 
               onSubmit={registrarPersona} className='form formulario-datos mt-4 col-md-12' id={idFormAdmin}
             >
-
-  
-            
             <div className='form-group'>
               <label htmlFor={`${idFormAdmin}-rut`}>Rut</label>
               <input

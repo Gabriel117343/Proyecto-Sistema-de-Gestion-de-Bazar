@@ -81,11 +81,14 @@ class Pedido(models.Model):
         ('entregado', 'Entregado'),
         ('cancelado', 'Cancelado'),
     ]
+    # campo codigo que tiene el codigo del pedido ej: PO-0001 y se autoincrementa
+    codigo = models.CharField(max_length=50, unique=True)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)  # Pedido hecho a un proveedor
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, default=1)
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     estado = models.CharField(max_length=20, choices=ESTADOS_PEDIDO, default='pendiente')
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    observacion = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'Pedido {self.id} - {self.proveedor.nombre} - {self.estado}'
@@ -96,18 +99,18 @@ class ProductoRecibido(models.Model):
     cantidad = models.PositiveIntegerField()
     fecha_recibido = models.DateTimeField(auto_now=True)
     aceptado = models.BooleanField(default=False)
-    observacion = models.TextField(blank=True, null=True)
+    
 
     def __str__(self):
         return f'{self.cantidad} x {self.producto.nombre} - {self.pedido.proveedor.nombre}'
 class ProductoPedido(models.Model):
-    pedido = models.ForeignKey(Pedido, related_name='productos', on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, related_name='productos', on_delete=models.CASCADE) # related_name es el nombre que se usa para acceder a los productos de un pedido, es una relación inversa
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return f'{self.cantidad} x {self.producto.nombre} - {self.pedido.cliente.nombre}'
+        return f'{self.cantidad} x {self.producto.nombre}'
 class Descuento(models.Model): # esto quiere decir que un descuento puede aplicarse a muchos productos y un producto puede tener muchos descuentos
     codigo = models.CharField(max_length=50, unique=True)
     descripcion = models.CharField(max_length=255)

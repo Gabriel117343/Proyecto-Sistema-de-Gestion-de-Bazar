@@ -1,6 +1,9 @@
 import React from 'react'
 import { BsInboxesFill } from "react-icons/bs"
 import './Pages.css'
+import { PedidosProvider } from '../../context/PedidosContext'
+import { TablaPedidosContenedor } from '../../components/admin/compras/TablaPedidosContenedor'
+import { ProveedoresProvider } from '../../context/ProveedoresContext'
 export const Compras = () => {
 
   return (
@@ -16,7 +19,13 @@ export const Compras = () => {
           <h2 className='m-0'>Ordenes de compra</h2>
 
         </div>
-        
+        <ProveedoresProvider>{/** se pasa el contexto */}
+          <PedidosProvider>
+            <TablaPedidosContenedor />
+
+          </PedidosProvider>
+        </ProveedoresProvider>
+  
         
 
       </section>
