@@ -15,7 +15,8 @@ export const TablaPedidosContenedor = () => {
     }
     cargar()
   }, [])
-  const borrarPedido = (id) => {
+  const eliminarPedido = (id) => {
+    console.log(id)
     async function confirmar() {
       const aceptar = await Swal.fire({
         title: '¿Estás seguro?',
@@ -66,7 +67,7 @@ export const TablaPedidosContenedor = () => {
   return (
      formularioActivo ?
      (
-      <FormOrdenCompra cerrarForm={cambiarSeleccionForm} />
+      <FormOrdenCompra volver={cambiarSeleccionForm}/>
      )
      :
      (
@@ -82,7 +83,7 @@ export const TablaPedidosContenedor = () => {
             <button className='btn btn-outline-primary' onClick={imprimirTabla}><i class="bi bi-printer"></i></button>
           </div>
         </div>
-        <ValidarPedidos listaPedidos={pedidos} borrarPedido={borrarPedido} filtro={pedidoBuscado}/>
+        <ValidarPedidos listaPedidos={pedidos} borrarPedido={eliminarPedido} filtro={pedidoBuscado} />
         
       </>
      )

@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from .serializer import UsuarioSerializer, ClienteSerializer, ProveedorSerializer, ProveedorSerializer, ProductoSerializer, PedidoSerializer, ProductoPedidoSerializer, DescuentoSerializer, VentaSerializer, SeccionSerializer, MovimientoSerializer, StockSerializer
 from .models import Usuario, Producto, Proveedor, Cliente, Pedido, ProductoPedido, Descuento, Venta, Seccion, Movimiento, Stock
+
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
 from django.http import JsonResponse
@@ -398,44 +399,7 @@ class StockView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': 'Error al actualizar el Stock'}, status=status.HTTP_400_BAD_REQUEST)
         
-class ProductoPedido(viewsets.ModelViewSet):
-    serializer_class = ProductoPedidoSerializer
-    queryset = ProductoPedido.objects.all() # Esto indica que todas las instancias del modelo ProductoPedido son el conjunto de datos sobre el que operará esta vista.
-    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
-    # uso de try exept para capturar errores
-    def list(self, request, *args, **kwargs):
-        try:
-            queryset = self.get_queryset()
-            serializer = self.get_serializer(queryset, many=True)
-            return Response({'data': serializer.data, 'message': 'ProductosPedidos obtenidos!'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': 'Error al obtener los ProductosPedidos'}, status=status.HTTP_400_BAD_REQUEST)
-    def destroy(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-            self.perform_destroy(instance) # Elimina el ProductoPedido
-            return Response({'message': 'ProductoPedido eliminado!'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': 'Error al eliminar el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
-    def create(self, request, *args, **kwargs):
-        try:
-            serializer = self.get_serializer(data=request.data)
-            if serializer.is_valid():
-                productoPedido = serializer.save()
-                return Response({'data': serializer.data, 'message': 'Se ha credo el ProductoPedido Exitosamente'}, status=status.HTTP_201_CREATED)
-            return Response({'error': 'No se ha podido crear el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': 'Error al crear el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
-    def update(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
-            serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales
-            if serializer.is_valid():
-                self.perform_update(serializer) # Actualiza el ProductoPedido
-                return Response({'data': serializer.data, 'message': 'ProductoPedido actualizado correctamente!'}, status=status.HTTP_200_OK)
-            return Response({'message': 'Error al actualizar el ProductoPedido', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            return Response({'error': 'Error al actualizar el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
+
 class PedidoView(viewsets.ModelViewSet):
     serializer_class = PedidoSerializer
     queryset = Pedido.objects.all() # Esto indica que todas las instancias del modelo Pedido son el conjunto de datos sobre el que operará esta vista.
@@ -461,6 +425,7 @@ class PedidoView(viewsets.ModelViewSet):
             if serializer.is_valid():
                 # Obtén el ID del proveedor del request
                 proveedor_id = request.data.get('proveedor')
+                print('proveedor:', proveedor_id)
                 # Busca el proveedor en la base de datos
                 proveedor = Proveedor.objects.get(id=proveedor_id)
 
@@ -472,35 +437,10 @@ class PedidoView(viewsets.ModelViewSet):
                 # Asocia el pedido con el proveedor y el usuario antes de guardarlo
                 pedido = serializer.save(proveedor=proveedor, usuario=usuario)
 
-                # Obtén los productos del request
-                productos = request.data.get('productos')
-                
-                
-                # Recorre los productos del request
-                for producto_data in productos:
-                    # Obtén el ID del producto del request
-                    producto_id = producto_data.get('producto')
-                    # Busca el producto en la base de datos
-                    producto = Producto.objects.get(id=producto_id)
-
-                    # Obtén la cantidad del producto del request
-                    cantidad = producto_data.get('cantidad')
-
-                    # Obtén el precio del producto del request
-                    precio = producto_data.get('precio')
-
-                    # Crea una entrada en la tabla ProductoPedido con el producto, la cantidad y el precio
-                    # codigo autoincremental ej: PO-0001, PO-0002, automatico
-                    codigo = 'PO-0001'
-                    if Pedido.objects.all().count() > 0:
-                        ultimo_pedido = Pedido.objects.all().order_by('-id')[0]
-                        codigo = f'PO-{ultimo_pedido.id + 1}' # esto es para obtener el ultimo pedido y sumarle 1 para obtener el codigo del nuevo pedido
-                    ProductoPedido.objects.create(producto=producto, pedido=pedido, cantidad=cantidad, precio=precio, codigo=codigo)
-
-                return Response({'data': serializer.data, 'message': 'Se ha credo el Pedido Exitosamente'}, status=status.HTTP_201_CREATED)
-            return Response({'error': 'No se ha podido crear el Pedido'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'message': 'Pedido creado!', 'pedidoId': pedido.id}, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            print(e)
             return Response({'error': 'Error al crear el Pedido'}, status=status.HTTP_400_BAD_REQUEST)
     def update(self, request, *args, **kwargs):
         try:
@@ -512,5 +452,52 @@ class PedidoView(viewsets.ModelViewSet):
             return Response({'message': 'Error al actualizar el Pedido', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'error': 'Error al actualizar el Pedido'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class ProductoPedidoView(viewsets.ModelViewSet):
+    serializer_class = ProductoPedidoSerializer
+    queryset = ProductoPedido.objects.all() # Esto indica que todas las instancias del modelo ProductoPedido son el conjunto de datos sobre el que operará esta vista.
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    # uso de try exept para capturar errores
+    def create(self, request, *args, **kwargs):
+        try:
+            pedido_id = request.data.get('pedido')
+            pedido = Pedido.objects.get(id=pedido_id)
+            producto_pedido_data = request.data
+
+            serializer = self.get_serializer(data=producto_pedido_data)
+            if serializer.is_valid():
+                productoPedido = serializer.save(pedido=pedido)
+                return Response({'message': 'ProductoPedido creado exitosamente'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'error': 'No se ha podido crear el ProductoPedido', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'Error al crear el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'ProductosPedidos obtenidos!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error al obtener los ProductosPedidos'}, status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance) # Elimina el ProductoPedido
+            return Response({'message': 'ProductoPedido eliminado!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error al eliminar el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
+    def update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            serializer = self.get_serializer(instance, data=request.data, partial=True) # partial=True para permitir actualizaciones parciales
+            if serializer.is_valid():
+                self.perform_update(serializer) # Actualiza el ProductoPedido
+                return Response({'data': serializer.data, 'message': 'ProductoPedido actualizado correctamente!'}, status=status.HTTP_200_OK)
+            return Response({'message': 'Error al actualizar el ProductoPedido', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'Error al actualizar el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
+        
     
         

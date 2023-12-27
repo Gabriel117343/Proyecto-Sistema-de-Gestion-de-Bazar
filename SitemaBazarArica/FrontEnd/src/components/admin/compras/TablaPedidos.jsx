@@ -1,7 +1,14 @@
 import { MagicMotion } from "react-magic-motion"
-
-import { useState } from 'react'
+import { PedidosContext } from '../../../context/PedidosContext'
+import { useState, useContext, useEffect } from 'react'
 const MostrarPedidos = ({ listaPedidos, borrarPedido, filtro }) => {
+  const { statePedido: { pedidos }, getPedidosContext } = useContext(PedidosContext)
+  useEffect(() => {
+    const cargar = () => {
+      getPedidosContext()
+    }
+    cargar()
+  }, [])
 
   if (filtro) {
     listaPedidos = listaPedidos.filter(pedido => {
@@ -27,7 +34,7 @@ const MostrarPedidos = ({ listaPedidos, borrarPedido, filtro }) => {
   // para calcular el numero total de paginas en funcion de la cantidad total de elementos y los elementos por pagina ej: el boton 1, 2, 3 etc..
   const totalBotones = Math.ceil(listaPedidos.reverse().length / cantidadPedidos)// reverse para que la tabla muestre desde el ultimo usuario creado al primero
   let contador = startIndex + 1 // para numerar los usuarios en la tabla comenzando por el starIndex aumentado en uno
-
+  console.log(pedidosMostrar)
   return (
     <section>
       <table className="table table-striped">
@@ -48,14 +55,14 @@ const MostrarPedidos = ({ listaPedidos, borrarPedido, filtro }) => {
                 return (
                   <tr key={index}>
                     <td>{contador++}</td>
-                    <td>{pedido.fecha_pedido.slice(0,10)}</td>
-                    <td>{pedido.codigo}</td>
-                    <td>{pedido.proveedor.nombre}</td>
-                    <td>{pedido.productos.length}</td>
-                    <td>{pedido.estado}</td>
+                    <td>{pedido?.fecha_pedido.slice(0,10)}</td>
+                    <td>{pedido?.codigo}</td>
+                    <td>{pedido?.proveedor.nombre}</td>
+                    <td>{pedido?.productos.length}</td>
+                    <td>{pedido?.estado}</td>
                     <td className="d-flex gap-1">
                       <button className="btn btn-dark"><i className="bi bi-boxes"></i> Recibir</button>
-                      <button className="btn btn-danger" onClick={() => borrarPedido(pedido._id)}><i className="bi bi-trash"></i></button>
+                      <button className="btn btn-danger" onClick={() => borrarPedido(pedido.id)}><i className="bi bi-trash"></i></button>
                       
                     </td>
                     
