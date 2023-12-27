@@ -9,7 +9,7 @@ const MostrarPedidos = ({ listaPedidos, borrarPedido, filtro }) => {
     }
     cargar()
   }, [])
-
+  console.log(listaPedidos)
   if (filtro) {
     listaPedidos = listaPedidos.filter(pedido => {
       return pedido.codigo.toLowerCase().includes(filtro.toLowerCase()) || pedido.estado.toLowerCase().includes(filtro.toLowerCase()) || pedido.proveedor.nombre.toLowerCase().includes(filtro.toLowerCase())
@@ -23,6 +23,7 @@ const MostrarPedidos = ({ listaPedidos, borrarPedido, filtro }) => {
       </div>
     )
   }
+  
   const [currentPage, setCurrentPage] = useState(1)
   // Se define la cantidad de usuarios a mostrar por pagina
   const cantidadPedidos = 10
