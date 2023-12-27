@@ -19,9 +19,10 @@ export const getPedido = (id, token) => {
   })
 }
 export const createPedido = async (pedido, token) => {
-  return pedidosApi.post('/', JSON.stringify(pedido), {
+  
+  return pedidosApi.post('/', pedido, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data',
       Authorization: `Token ${token}`
     }
   })

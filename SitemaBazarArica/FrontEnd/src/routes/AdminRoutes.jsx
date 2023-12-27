@@ -16,37 +16,42 @@ import { Usuarios } from '../pages/admin/Usuarios'
 import { Configuracion } from '../pages/admin/Configuracion'
 import { UsuariosProvider } from '../context/UsuariosContext'
 import { SeccionesProvider } from '../context/SeccionesContext'
+import { ProductosPedidosProvider } from '../context/ProductosPedidosContext'
 
 import { Secciones } from '../pages/admin/Secciones'
 // MENU DE OPCIONES PARA EL ADMINISTRADOR
 import { Menu } from '../components/admin/Menu'
 export const AdminRoutes = () => {
   return (
-    <SeccionesProvider>
-      <UsuariosProvider>
-        <HeaderAdmin />
-        <Menu>
-      
-          <Routes>
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='*' element={<Navigate to='/admin/dashboard' />} /> {/* si no se encuentra la ruta se redirecciona a dashboard */}
-            <Route path='/compras' element={<Compras />} />
-            <Route path='/recibos' element={<Recibos />} />
-            <Route path='/devoluciones' element={<Devoluciones />} />
-            <Route path='/stocks' element={<Stocks />} />
-            <Route path='/ventas' element={<Ventas />} />
-            <Route path='/proveedores' element={<Proveedores />} />
-            <Route path='/productos' element={<Productos />} />
-            <Route path='/usuarios' element={<Usuarios />} />
-            <Route path='/secciones' element={<Secciones />} />
-            <Route path='/configuracion' element={<Configuracion />} />
-          </Routes>
+    <ProductosPedidosProvider>
+      <SeccionesProvider>
+        <UsuariosProvider>
+          <HeaderAdmin />
+          <Menu>
+        
+            <Routes>
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='*' element={<Navigate to='/admin/dashboard' />} /> {/* si no se encuentra la ruta se redirecciona a dashboard */}
+              <Route path='/compras' element={<Compras />} />
+              <Route path='/recibos' element={<Recibos />} />
+              <Route path='/devoluciones' element={<Devoluciones />} />
+              <Route path='/stocks' element={<Stocks />} />
+              <Route path='/ventas' element={<Ventas />} />
+              <Route path='/proveedores' element={<Proveedores />} />
+              <Route path='/productos' element={<Productos />} />
+              <Route path='/usuarios' element={<Usuarios />} />
+              <Route path='/secciones' element={<Secciones />} />
+              <Route path='/configuracion' element={<Configuracion />} />
+            </Routes>
 
-        </Menu>
-      
-      </UsuariosProvider>
-      
-    </SeccionesProvider>
+          </Menu>
+        
+        </UsuariosProvider>
+        
+      </SeccionesProvider>
+
+    </ProductosPedidosProvider>
+    
     
     
   )

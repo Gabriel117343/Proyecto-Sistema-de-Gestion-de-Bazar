@@ -2,22 +2,26 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import { PedidosContext } from '../../../context/PedidosContext'
 import { ProductosContext } from '../../../context/ProductosContext'
 import { ProveedoresContext } from '../../../context/ProveedoresContext'
+import { ProductosPedidosContext } from '../../../context/ProductosPedidosContext'
 import { BsBorder, BsBorderBottom } from 'react-icons/bs'
 import { debounce } from 'lodash'
 import { toast } from 'react-hot-toast'
 import swal from 'sweetalert2'
 import './compras.css'
-export const FormOrdenCompra = ({cerrarForm}) => {
+export const FormOrdenCompra = ({ volver }) => {
 
   const { statePedido: { pedidos }, getPedidosContext, crearPedidoContext } = useContext(PedidosContext)
   const { stateProducto: { productos, productoSeleccionado }, getProductosContext } = useContext(ProductosContext)
   const { stateProveedor: { proveedores, proveedorSeleccionado }, getProveedoresContext } = useContext(ProveedoresContext)
+  const { productosPedidosState: { listaPedidos }, getAllProductosPedidosContext, crearProductoPedidoContext } = useContext(ProductosPedidosContext)
+
   const [productosDeProveedor, setProductosDeProveedor] = useState([]) // Nuevo estado para los productos del proveedor
   const [productosAgregados, setProductosAgregados] = useState([]) // Nuevo estado para los productos agregados a la orden de compra
   const [subtotal, setSubtotal] = useState(0)
   const [descuento, setDescuento] = useState(0)
   const [impuesto, setImpuesto] = useState(0)
   const [total, setTotal] = useState(0)
+  const [ordenFinalizada, setOrdenFinalizada] = useState(false)
 
   const codigoRef = useRef(null)
   useEffect(() => {
@@ -25,10 +29,12 @@ export const FormOrdenCompra = ({cerrarForm}) => {
       getPedidosContext() // se ejecuta la funcion getProductos del contexto de los productos
       getProductosContext()
       getProveedoresContext()
+      getAllProductosPedidosContext()
 
     }
     cargar()
   }, [])
+ console.log(listaPedidos)
   useEffect(() => {
     const calcularSubtotal = () => {
       const sub = productosAgregados.map(producto => producto.subtotal) // se crea un array con los subtotales de cada producto
@@ -146,18 +152,49 @@ export const FormOrdenCompra = ({cerrarForm}) => {
     formPedido.append('codigo', codigoRef.current.value) // se agrega el codigo al form
     // codigo del proveedor atravez del primero producto de la lista de productos agregados
     formPedido.append('proveedor', productosAgregados[0].producto.proveedor.id)
+
     // se puede agregar un objeto al form con append, estos seran los productos del pedido
-    formPedido.append('productos', JSON.stringify(productosAgregados))
     formPedido.append('total', total)
     formPedido.append('observacion', datosOrden.observacion)
 
-    const { success, message } = await crearPedidoContext(formPedido)
+    const { success, message, pedidoId } = await crearPedidoContext(formPedido)
+    console.log(pedidoId)
     if (success) {
       swal.fire({
         icon: 'success',
         title: 'Pedido creado',
         text: message
       })
+      console.log(productosAgregados)
+      // Crear un nuevo FormData para los productos del pedido
+      for (let productoAgregado of productosAgregados) {
+        // Crear un nuevo FormData para el producto del pedido
+        const formProductoPedido = new FormData()
+        formProductoPedido.append('producto', productoAgregado.producto.id)
+        formProductoPedido.append('cantidad', productoAgregado.cantidad)
+        
+        formProductoPedido.append('precio', productoAgregado.subtotal)
+        formProductoPedido.append('pedido', pedidoId)
+        const mostrarForm  = Object.fromEntries(formProductoPedido)
+        console.log(mostrarForm)
+        // Enviar el FormData con el producto del pedido
+        const { success, message } = await crearProductoPedidoContext(formProductoPedido)
+        if (!success) {
+          swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: message
+          })
+          break
+        }
+      }
+    
+      swal.fire({
+        icon: 'success',
+        title: 'Productos agregados',
+        text: 'Todos los productos fueron agregados al pedido'
+      })
+      setOrdenFinalizada(true)
     } else {
       swal.fire({
         icon: 'error',
@@ -167,61 +204,76 @@ export const FormOrdenCompra = ({cerrarForm}) => {
     }
 
   }
+  
+  
+  const imprimir = () => {
+    print()
+  }
   // Formulario de Orden de compra
   return (
     <section style={{borderTop: '3px solid #3085d6', borderBottom: '3px solid #3085d6'}} className='rounded py-2 px-3 bg-white'>
-      <form action="" onSubmit={agregarProducto}>
-        <div  style={{borderBottom: '2px solid #0011 '}}>
-          <h3>Crear Nueva Orden de Compra</h3>
-        </div>
-        
-        <div className="row">
-          <div className="col-md-6">
-            <div className="form-group">
-              <label  htmlFor="codigo" className='colorLabel'>Código</label>
-              <input ref={codigoRef} type="text" className="form-control fondoSelect" name="codigo" id="codigo" placeholder='PO-0001' />
-            </div>
+      {ordenFinalizada ? 
+      (
+        <h3 className="text-center">Orden de Compra para {productosAgregados[0]?.producto.proveedor.nombre}</h3>
+      )
+      :
+      (
+        <form action="" onSubmit={agregarProducto}>
+          <div  style={{borderBottom: '2px solid #0011 '}}>
+            <h3>Crear Nueva Orden de Compra</h3>
           </div>
-          <div className="col-md-6">
-            <div className="form-group">
+          
+          <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <label  htmlFor="codigo" className='colorLabel'>Código</label>
+                <input ref={codigoRef} type="text" className="form-control fondoSelect" name="codigo" id="codigo" placeholder='PO-0001' />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="form-group">
 
-              <label htmlFor="proveedor" className='colorLabel'>Proveedor</label>
-        
-              <select disabled={productosAgregados.length === 0 ? false:true}  className="form-control fondoSelect" name="proveedor" id="proveedor" onChange={encontrarProductosDeProveedor}>
-                <option value="">Seleccione un proveedor</option>
-                {proveedores.map(proveedor => (
-                  <option onChange={() => encontrarProductosDeProveedor(proveedor.id)} value={proveedor.id} key={proveedor.id}>{proveedor.nombre}</option>
-                ))}
-              </select>
+                <label htmlFor="proveedor" className='colorLabel'>Proveedor</label>
+          
+                <select disabled={productosAgregados.length === 0 ? false:true}  className="form-control fondoSelect" name="proveedor" id="proveedor" onChange={encontrarProductosDeProveedor}>
+                  <option value="">Seleccione un proveedor</option>
+                  {proveedores.map(proveedor => (
+                    <option onChange={() => encontrarProductosDeProveedor(proveedor.id)} value={proveedor.id} key={proveedor.id}>{proveedor.nombre}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="row mt-2">
-        <h3 className='colorLabel'>Producto</h3>
-          <div className="col-md-4">
-            <div className="form-group">
-              <label htmlFor="producto" className='labe'>Producto</label>
-              <select className="form-control fondoSelect" name="producto" id="producto">
-                {productosDeProveedor.length === 0 ? <option value="" disabled={true}>Seleccione un proveedor Primero</option> : <option value="">Seleccione un producto</option>}
-                {productosDeProveedor.map(producto => (
-                  <option value={producto.id} key={producto.id}>{producto.nombre}</option>
-                ))}
-              </select>
+          <div className="row mt-2">
+          <h3 className='colorLabel'>Producto</h3>
+            <div className="col-md-4">
+              <div className="form-group">
+                <label htmlFor="producto" className='labe'>Producto</label>
+                <select className="form-control fondoSelect" name="producto" id="producto">
+                  {productosDeProveedor.length === 0 ? <option value="" disabled={true}>Seleccione un proveedor Primero</option> : <option value="">Seleccione un producto</option>}
+                  {productosDeProveedor.map(producto => (
+                    <option value={producto.id} key={producto.id}>{producto.nombre}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="form-group">
+                <label htmlFor="cantidad">Cantidad</label>
+                <input type="number" className="form-control fondoSelect" name="cantidad" id="cantidad" placeholder='Ingrese la cantidad' />
+              </div>
+            </div>
+            <div className="col-md-4 d-flex justify-content-center align-items-center gap-5 pt-3">
+              <button className='btn btn-primary' type='submit'>Agregar</button>
+              <button className='btn btn-danger' type='button' onClick={() => volver()}>Cancelar</button>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="form-group">
-              <label htmlFor="cantidad">Cantidad</label>
-              <input type="number" className="form-control fondoSelect" name="cantidad" id="cantidad" placeholder='Ingrese la cantidad' />
-            </div>
-          </div>
-          <div className="col-md-4 d-flex justify-content-center align-items-center gap-5 pt-3">
-            <button className='btn btn-primary' type='submit'>Agregar</button>
-            <button className='btn btn-danger' type='button' onClick={() => cerrarForm()}>Cancelar</button>
-          </div>
-        </div>
 
-      </form>
+        </form>
+
+      )
+      }
+      
       
       <br />
       <form action="" onSubmit={crearPedido}>
@@ -286,7 +338,26 @@ export const FormOrdenCompra = ({cerrarForm}) => {
 
           </div>
           <div className="col-md-6 d-flex align-items-end">
-            <button className='btn btn-primary' >Guardar</button>
+            {ordenFinalizada ?
+            (
+              <>
+              <div className="row">
+                <div className="alert alert-success p-1">Orden Finalizada</div>
+                <div className="d-flex gap-2">
+                  <button className='btn btn-success' onClick={() => volver()}>Volver</button>
+                  <button className='btn btn-primary' onClick={imprimir}>Imprimir</button>
+                </div>
+                
+              </div>
+                
+              </>
+            ):
+            (
+              <button className='btn btn-primary' disabled={productosAgregados.length === 0 ? true:false}>Guardar</button>
+            )
+             
+            }
+            
           </div>
           
         </div>

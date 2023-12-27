@@ -55,13 +55,14 @@ export const PedidosProvider = ({ children }) => {
     console.log(p)
     try {
       const res = await createPedido(pedido, token)
+  
       console.log(res)
       if (res.status === 200 || res.status === 201) {
         dispatch({
           type: 'CREATE_PEDIDO',
           payload: res.data.data
         })
-        return ({ success: true, message: res.data.message })
+        return ({ success: true, message: res.data.message, pedidoId: res.data.pedidoId })
       }
     } catch (error) {
       console.error(error)

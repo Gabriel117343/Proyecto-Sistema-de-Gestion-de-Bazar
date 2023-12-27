@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Producto, Proveedor, Cliente, Pedido, ProductoPedido, Descuento, Venta, Seccion, Movimiento, Stock
+from .models import Usuario, ProductoPedido, Producto, Proveedor, Cliente, Pedido, Descuento, Venta, Seccion, Movimiento, Stock
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Usuario para serializar los datos
         model = Usuario
@@ -48,20 +48,16 @@ class ClienteSerializer(serializers.ModelSerializer):
 class ProductoPedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductoPedido
-        fields = ['producto', 'cantidad', 'precio']
+        fields =  'id', 'pedido', 'producto', 'cantidad', 'precio'
 class PedidoSerializer(serializers.ModelSerializer):
-    productos = ProductoPedidoSerializer(many=True)
+    productos = ProductoPedidoSerializer(read_only=True, many=True)  # Añade esta línea
+
     proveedor = ProveedorSerializer(read_only=True)
 
     class Meta:
         model = Pedido
-        fields = ['proveedor', 'usuario', 'fecha_pedido', 'estado', 'total', 'productos', 'codigo', 'observacion']
-        def create(self, validated_data):
-            productos_data = validated_data.pop('productos')
-            pedido = Pedido.objects.create(**validated_data)
-            for producto_data in productos_data:
-                ProductoPedido.objects.create(pedido=pedido, **producto_data)
-            return pedido
+        fields = ['id', 'proveedor', 'usuario', 'fecha_pedido', 'estado', 'total', 'codigo', 'observacion', 'productos']
+    
 class DescuentoSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Descuento para serializar los datos
         model = Descuento
