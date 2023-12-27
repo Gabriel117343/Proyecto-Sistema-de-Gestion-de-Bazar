@@ -23,18 +23,40 @@ export const FormOrdenCompra = ({ volver }) => {
   const [total, setTotal] = useState(0)
   const [ordenFinalizada, setOrdenFinalizada] = useState(false)
 
-  const codigoRef = useRef(null)
+  const [codigoPedido, setCodigoPedido] = useState('')
+  const productoRef = useRef() // se usara para limpiar el input de producto
+  const cantidadRef = useRef() // se usara para limpiar el input de cantidad
+
   useEffect(() => {
     const cargar = () => {
       getPedidosContext() // se ejecuta la funcion getProductos del contexto de los productos
       getProductosContext()
       getProveedoresContext()
       getAllProductosPedidosContext()
+      // codigo es del los pedidos empieza por PO-0001 y se va incrementando a PO-0002, etc..
+      // dependiendo del numero final de la lista de pedidos es decier el 1 de PO-0001, el 2 de PO-0002, etc..
+      // se obtiene el ultimo pedido de la lista de pedidos
+      // para generar el codigo del nuevo pedido se obtiene el ultimo pedido de la lista de pedidos
+      if (pedidos.length ===  0) { // si no hay pedidos se genera el codigo PO-0001
+        setCodigoPedido('PO-0001')
+        return // se retorna para que no se ejecute el codigo de abajo, porque si no hay pedidos no se puede obtener el ultimo pedido
+
+      }
+      pedidos.sort((a, b) => a.id - b.id) // ordenando la lista de pedidos de menor a mayor
+      const ultimoPedido = pedidos[pedidos.length - 1] // obteniendo el ultimo pedido de la lista de pedidos
+      const nuevoCodigo = ultimoPedido?.codigo // obteniendo el codigo del ultimo pedido
+      const codigoGenerado = nuevoCodigo?.split(0) // separando el codigo por el guion
+      console.log(codigoGenerado)
+      const numero = parseInt(codigoGenerado[3]) // obteniendo el numero del codigo
+      const nuevoNumero = numero + 1 // incrementando el numero del codigo
+      const codigo = 'PO-000' + nuevoNumero // generando el nuevo codigo
+      setCodigoPedido(codigo) // seteando el codigo del nuevo pedido
+      console.log(codigoPedido)
 
     }
     cargar()
   }, [])
- console.log(listaPedidos)
+  console.log(listaPedidos)
   useEffect(() => {
     const calcularSubtotal = () => {
       const sub = productosAgregados.map(producto => producto.subtotal) // se crea un array con los subtotales de cada producto
@@ -70,7 +92,7 @@ export const FormOrdenCompra = ({ volver }) => {
   const agregarProducto = (event) => {
     event.preventDefault()
     const datosOrden = Object.fromEntries(new FormData(event.target))
-    if (datosOrden.producto === '' || datosOrden.cantidad === '' || datosOrden.proveedor === '' || datosOrden.codigo === '') {
+    if (datosOrden.producto === '' || datosOrden.cantidad === '' || datosOrden.proveedor === '') {
 
       swal.fire({
         icon: 'error',
@@ -89,6 +111,8 @@ export const FormOrdenCompra = ({ volver }) => {
       setProductosAgregados([...productosAgregados, productoAgregado])
 
       console.log(productosAgregados)
+      productoRef.current.value = ''
+      cantidadRef.current.value = '' // limpiando los inputs de producto y cantidad
       toast.success('Producto agregado correctamente')
     }
   }
@@ -149,7 +173,7 @@ export const FormOrdenCompra = ({ volver }) => {
     }
 
     const formPedido = new FormData()
-    formPedido.append('codigo', codigoRef.current.value) // se agrega el codigo al form
+    formPedido.append('codigo', codigoPedido) // se agrega el codigo generado en el useEffect al form
     // codigo del proveedor atravez del primero producto de la lista de productos agregados
     formPedido.append('proveedor', productosAgregados[0].producto.proveedor.id)
 
@@ -227,7 +251,7 @@ export const FormOrdenCompra = ({ volver }) => {
             <div className="col-md-6">
               <div className="form-group">
                 <label  htmlFor="codigo" className='colorLabel'>Código</label>
-                <input ref={codigoRef} type="text" className="form-control fondoSelect" name="codigo" id="codigo" placeholder='PO-0001' />
+                <input  type="text" className="form-control fondoSelect" name="codigo" id="codigo" defaultValue={codigoPedido} readOnly />
               </div>
             </div>
             <div className="col-md-6">
@@ -249,7 +273,7 @@ export const FormOrdenCompra = ({ volver }) => {
             <div className="col-md-4">
               <div className="form-group">
                 <label htmlFor="producto" className='labe'>Producto</label>
-                <select className="form-control fondoSelect" name="producto" id="producto">
+                <select ref={productoRef} className="form-control fondoSelect" name="producto" id="producto">
                   {productosDeProveedor.length === 0 ? <option value="" disabled={true}>Seleccione un proveedor Primero</option> : <option value="">Seleccione un producto</option>}
                   {productosDeProveedor.map(producto => (
                     <option value={producto.id} key={producto.id}>{producto.nombre}</option>
@@ -260,7 +284,7 @@ export const FormOrdenCompra = ({ volver }) => {
             <div className="col-md-4">
               <div className="form-group">
                 <label htmlFor="cantidad">Cantidad</label>
-                <input type="number" className="form-control fondoSelect" name="cantidad" id="cantidad" placeholder='Ingrese la cantidad' />
+                <input ref={cantidadRef} type="number" className="form-control fondoSelect" name="cantidad" id="cantidad" placeholder='Ingrese la cantidad' />
               </div>
             </div>
             <div className="col-md-4 d-flex justify-content-center align-items-center gap-5 pt-3">
@@ -345,7 +369,7 @@ export const FormOrdenCompra = ({ volver }) => {
                 <div className="alert alert-success p-1">Orden Finalizada</div>
                 <div className="d-flex gap-2">
                   <button className='btn btn-success' onClick={() => volver()}>Volver</button>
-                  <button className='btn btn-primary' onClick={imprimir}>Imprimir</button>
+                  <button className='btn btn-primary' type='button' onClick={imprimir}>Imprimir</button>
                 </div>
                 
               </div>

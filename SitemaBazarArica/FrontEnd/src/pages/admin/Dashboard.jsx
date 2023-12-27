@@ -2,6 +2,7 @@ import React from 'react'
 import { FcShop } from "react-icons/fc"
 import { ListaDeOpciones } from '../../components/admin/dashboard/ListaDeOpciones'
 import { StocksProvider } from '../../context/StocksContext'
+import { PedidosProvider } from '../../context/PedidosContext'
 import './Pages.css'
 export const Dashboard = () => {
 
@@ -18,10 +19,14 @@ export const Dashboard = () => {
           <h1 className='m-0'>Sistema de Gestion para el Bazar</h1>
 
         </div>
-        <StocksProvider>
-          <ListaDeOpciones />
+        <PedidosProvider>
+          <StocksProvider>
+            <ListaDeOpciones />
 
-        </StocksProvider>
+          </StocksProvider>
+
+        </PedidosProvider>
+        
         
         
       </section>

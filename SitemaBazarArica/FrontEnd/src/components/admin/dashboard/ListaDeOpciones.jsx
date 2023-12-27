@@ -2,18 +2,22 @@ import React, { useContext, useEffect } from 'react'
 import './styless.css'
 import { UsuariosContext } from '../../../context/UsuariosContext'
 import { StocksContext } from '../../../context/StocksContext'
+import { PedidosContext } from '../../../context/PedidosContext'
 export const ListaDeOpciones = () => {
   const { stateUsuario: { usuarios }, getUsuarios } = useContext(UsuariosContext)
   const { stateStock: { stocks }, getStocksContext } = useContext(StocksContext)
+  const { statePedido: { pedidos }, getPedidosContext } = useContext(PedidosContext)
   const usuariosContados = usuarios?.length
   useEffect(() => {
     const cargar = () => {
       getUsuarios() // llamando a la funcion para obtener los usuarios
       getStocksContext() // llamando a la funcion para obtener los stocks
+      getPedidosContext() // llamando a la funcion para obtener los pedidos
     }
     cargar()
   }, [])
   const stocksContados = stocks.map((stock) => stock.cantidad).reduce((a, b) => a + b, 0) // sumando los stocks
+  
   return (
     <>
       <article className='d-flex flex-wrap gap-3'>
@@ -28,7 +32,7 @@ export const ListaDeOpciones = () => {
                     <p> Total</p>
                   </div>
                   <div className="col-md-3 d-flex align-items-end justify-content-end">
-                    <h3 className="p-0 m-0">0</h3>
+                    <h3 className="p-0 m-0">{pedidos.length}</h3>
                   </div>
                 </div>
               </div>
