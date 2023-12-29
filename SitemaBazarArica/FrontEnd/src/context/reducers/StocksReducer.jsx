@@ -20,6 +20,11 @@ export const StocksReducer = (stateStock, action) => {
         ...stateStock, // copia el estado actual del componente
         stocks: stateStock.stocks.map((stock) => stock.id === payload.id ? payload : stock) // actualiza el stock  que se modifico y deja los demas igual como estaban antes de la modificacion
       }
+    case 'RECIBIR_STOCK':
+      return {
+        ...stateStock,
+        stocks: stateStock.stocks.map((stock) => stock.id === payload.id ? payload : stock)
+      }
     default:
       return stateStock // retorna el estado actual del componente si no se ejecuta ninguna accion
   }

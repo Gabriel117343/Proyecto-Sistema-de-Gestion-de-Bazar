@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react'
-import { getAllStocks, updateStock, getStock } from '../api/stocks.api'
+import { getAllStocks, updateStock, getStock, recibirStock } from '../api/stocks.api'
 import { LoginContext } from './LoginContext'
 import { StocksReducer } from './reducers/StocksReducer'
 export const StocksContext = createContext() // crea el contexto
@@ -64,11 +64,28 @@ export const StocksProvider = ({ children }) => {
       return ({ success: false, message: error.response.data.error })
     }
   }
+  const recibirStockContext = async (id, cantidad) => {
+    try {
+      const res = await recibirStock(id, cantidad, token) // res para referenciarse al response del servidor
+      console.log(res)
+      if (res.status === 200 || res.status === 201) {
+        dispatch({
+          type: 'RECIBIR_STOCK',
+          payload: res.data.data
+        })
+        return ({ success: true, message: res.data.message })
+      }
+    } catch (error ) {
+      console.error(error)
+      return ({ success: false, message: error.response.data.error })
+    }
+  }
   return (
     <StocksContext.Provider value={{
       getStocksContext,
       getStockContext,
       updateStockContext,
+      recibirStockContext,
       stateStock
     }}>{ children }
     </StocksContext.Provider>

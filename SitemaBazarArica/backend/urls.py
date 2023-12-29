@@ -18,7 +18,10 @@ router.register(r'stocks', views.StockView, 'stocks')
 router.register(r'pedidos', views.PedidoView, 'pedidos')
 # ProductoPedido
 router.register(r'productos_pedidos', views.ProductoPedidoView, 'productos_pedidos')
-
+# Cliente
+router.register(r'clientes', views.ClienteView, 'clientes')
+# Ventas
+router.register(r'ventas', views.VentaView, 'ventas')
 urlpatterns = [
     path('datos/v1/', include(router.urls)),
     path('docs/', include_docs_urls(title="Usuarios Api")),

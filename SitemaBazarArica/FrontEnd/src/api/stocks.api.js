@@ -25,3 +25,12 @@ export const updateStock = (id, stock, token) => {
     }
   })
 }
+// recibir el stock, api personalizada
+export const recibirStock = (id, cantidad, token) => {
+  return stocksApi.put(`/${id}/recibir/`, cantidad, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Token ${token}`
+    }
+  })
+}

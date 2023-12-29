@@ -118,19 +118,19 @@ class Descuento(models.Model): # esto quiere decir que un descuento puede aplica
     valido_desde = models.DateTimeField()
     valido_hasta = models.DateTimeField()
     productos = models.ManyToManyField(Producto)  # Los productos a los que se aplica el descuento
-
+    
     def __str__(self):
         return self.codigo
 # Modelo para representar las ventas realizadas
 class Venta(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     vendedor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
     fecha_venta = models.DateTimeField(auto_now_add=True)
     descuento = models.ForeignKey(Descuento, on_delete=models.SET_NULL, null=True, blank=True)
-    # Otros campos relevantes para la venta
+
+    def __str__(self):
+        return f'Venta {self.id}'
 class Seccion(models.Model):
     nombre = models.CharField(max_length=100)
     numero = models.IntegerField(unique=True)
@@ -156,7 +156,7 @@ class Movimiento(models.Model):
 
     # Otros campos relevantes para la venta
 class Stock(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    producto = models.OneToOneField(Producto, on_delete=models.CASCADE) # Quiere decir que un producto tiene un stock y un stock pertenece a un producto
     descripcion = models.CharField(max_length=255, default='Sin descripción')
     cantidad = models.IntegerField(default=0)
     

@@ -13,6 +13,8 @@ import { ProductosProvider } from './context/ProductosContext'
 
 import './App.css'
 import { HerramientaDesarrollo } from './views/HerramientaDesarrollo'
+import { ClientesProvider } from './context/ClientesContext'
+import { VentasProvider } from './context/VentasContext'
 function App() {
   const { obtenerUsuarioLogeado, stateLogin: { isAuth } } = useContext(LoginContext)
   const [loading, setLoading] = useState(true);
@@ -39,17 +41,25 @@ function App() {
   }
 
   return (
-    <ProductosProvider> {/* este es el contexto de los productos */}
-       <BrowserRouter>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='*' element={<Navigate to='/login' />}/>
-          <Route path='/admin/*' element={<AdminRoutes />} />
-        </Routes>
-        <HerramientaDesarrollo />
-        <Toaster />
-      </BrowserRouter>
-    </ProductosProvider>
+    <VentasProvider>
+      <ClientesProvider>
+       <ProductosProvider> {/* este es el contexto de los productos */}
+          <BrowserRouter>
+            <Routes>
+              <Route path='/login' element={<Login />} />
+              <Route path='*' element={<Navigate to='/login' />}/>
+              <Route path='/admin/*' element={<AdminRoutes />} />
+            </Routes>
+            <HerramientaDesarrollo />
+            <Toaster />
+          </BrowserRouter>
+        </ProductosProvider>
+
+      </ClientesProvider>
+
+    </VentasProvider>
+    
+   
    
   )
 }

@@ -37,7 +37,8 @@ from rest_framework.decorators import api_view
 from django.contrib.sites.shortcuts import get_current_site # para obtener el dominio actual http://localhost:8000
 from datetime import datetime, time # para saber la fecha actual
 from rest_framework.permissions import IsAuthenticated, AllowAny
-
+from rest_framework.decorators import action
+from django.db.models import F
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
 
 
@@ -380,6 +381,20 @@ class StockView(viewsets.ModelViewSet):
     queryset = Stock.objects.all() # Esto indica que todas las instancias del modelo Stock son el conjunto de datos sobre el que operará esta vista.
     authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
     # uso de try exept para capturar errores
+
+    @action(detail=True, methods=['post'])
+    def recibir(self, request, pk=None):
+        try:
+            # Busca el producto en el stock
+            stock_item = self.get_object()
+
+            # Aumenta el stock
+            stock_item.cantidad = F('cantidad') + request.data.get('cantidad', 0) # F es para obtener el valor actual de la cantidad
+            stock_item.save() # guarda la cantidad actualizada
+
+            return Response({'message': 'Stock actualizado!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error al actualizar el stock'}, status=status.HTTP_400_BAD_REQUEST)
     def list(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
@@ -453,7 +468,28 @@ class PedidoView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': 'Error al actualizar el Pedido'}, status=status.HTTP_400_BAD_REQUEST)
         
+    @action(detail=True, methods=['put']) # put porque se actualiza el estado del pedido
+    def recibir(self, request, pk=None): # pk es el id del pedido
+        try:
+            # Busca el pedido
+            pedido = self.get_object()
 
+            # Marca el pedido como recibido
+            pedido.estado = 'recibido'
+            pedido.save()
+
+            # Itera sobre los productos del pedido
+            for producto_pedido in pedido.productos.all():
+                # Busca el producto en el stock
+                stock_item = Stock.objects.get(producto=producto_pedido.producto)
+
+                # Aumenta el stock
+                stock_item.cantidad = F('cantidad') + producto_pedido.cantidad
+                stock_item.save()
+
+            return Response({'message': 'Pedido recibido y stock actualizado!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error al recibir el pedido'}, status=status.HTTP_400_BAD_REQUEST)
 class ProductoPedidoView(viewsets.ModelViewSet):
     serializer_class = ProductoPedidoSerializer
     queryset = ProductoPedido.objects.all() # Esto indica que todas las instancias del modelo ProductoPedido son el conjunto de datos sobre el que operará esta vista.
@@ -499,5 +535,48 @@ class ProductoPedidoView(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': 'Error al actualizar el ProductoPedido'}, status=status.HTTP_400_BAD_REQUEST)
         
+
+class ClienteView(viewsets.ModelViewSet):
+    serializer_class = ClienteSerializer
+    queryset = Cliente.objects.all() # Esto indica que todas las instancias del modelo Cliente son el conjunto de datos sobre el que operará esta vista.
+    authentication_classes = [TokenAuthentication]  # Utiliza la autenticación basada en tokens
+    # uso de try exept para capturar errores
+    def list(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response({'data': serializer.data, 'message': 'Clientes obtenidos!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': 'Error al obtener los Clientes'}, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                cliente = serializer.save()
+                return Response({'data': serializer.data, 'message': 'Se ha credo el Cliente Exitosamente'}, status=status.HTTP_201_CREATED)
+            return Response({'error': 'No se ha podido crear el Cliente'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': 'Error al crear el Cliente'}, status=status.HTTP_400_BAD_REQUEST)
+class VentaView(viewsets.ModelViewSet):
+    serializer_class = VentaSerializer
+    queryset = Venta.objects.all() # Esto indica que todas las instancias del modelo Venta son el conjunto de datos sobre el que operará esta vista.
+    permission_classes = [AllowAny]# Utiliza la autenticación basada en tokens
+    # uso de try exept para capturar errores
     
-        
+    def create(self, request, *args, **kwargss):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            cliente_id = request.data.get('cliente')
+            total  = request.data.get('total')
+            try:
+                cliente = Cliente.objects.get(id=cliente_id)
+                vendedor = Usuario.objects.get(id=request.user.id)
+                venta = serializer.save(cliente=cliente, vendedor=vendedor, total=total)
+                venta.save()
+                return Response({'message': 'Venta realizada exitosamente!'}, status=status.HTTP_201_CREATED)
+            except Cliente.DoesNotExist:
+                return Response({'error': 'Cliente no encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+            except Usuario.DoesNotExist:
+                return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'No se ha podido realizar la venta'}, status=status.HTTP_400_BAD_REQUEST)

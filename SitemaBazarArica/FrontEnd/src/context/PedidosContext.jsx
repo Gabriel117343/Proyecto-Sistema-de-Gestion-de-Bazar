@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer } from 'react'
-import { getAllPedidos, getPedido, createPedido, deletePedido, updatePedido } from '../api/pedidos.api'
+import { getAllPedidos, getPedido, createPedido, deletePedido, updatePedido, recibirPedido } from '../api/pedidos.api'
 import { LoginContext } from '../context/LoginContext'
 import { PedidosReducer } from './reducers/PedidosReducer'
 
@@ -101,6 +101,20 @@ export const PedidosProvider = ({ children }) => {
       return ({ success: false, message: error.response.data.error })
     }
   }
+  // APi personalizada para recibir un pedido
+  const recibirPedidoContext = async (id) => {
+    try {
+      const res = await recibirPedido(id, token)
+      console.log(res)
+      if (res.status === 200 || res.status === 201) {
+        // retorna el mensaje del servidor, esto es el controlador de la api
+        return ({ success: true, message: res.data.message })
+      }
+    } catch (error) {
+      console.error(error)
+      return ({ success: false, message: error.response.data.error })
+    }
+  }
   return (
     <PedidosContext.Provider value={{
       statePedido,
@@ -108,7 +122,8 @@ export const PedidosProvider = ({ children }) => {
       getPedidoContext,
       crearPedidoContext,
       eliminarPedidoContext,
-      actualizarPedidoContext
+      actualizarPedidoContext,
+      recibirPedidoContext
     }}>
       {children}
     </PedidosContext.Provider>

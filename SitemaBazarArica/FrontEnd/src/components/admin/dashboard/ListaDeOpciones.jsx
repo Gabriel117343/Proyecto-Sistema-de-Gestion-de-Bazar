@@ -3,19 +3,27 @@ import './styless.css'
 import { UsuariosContext } from '../../../context/UsuariosContext'
 import { StocksContext } from '../../../context/StocksContext'
 import { PedidosContext } from '../../../context/PedidosContext'
+import { VentasContext } from '../../../context/VentasContext'
+import { ClientesContext } from '../../../context/ClientesContext'
+import { get } from 'lodash'
 export const ListaDeOpciones = () => {
   const { stateUsuario: { usuarios }, getUsuarios } = useContext(UsuariosContext)
   const { stateStock: { stocks }, getStocksContext } = useContext(StocksContext)
   const { statePedido: { pedidos }, getPedidosContext } = useContext(PedidosContext)
-  const usuariosContados = usuarios?.length
+  const { stateVenta: { ventas }, getVentasContext } = useContext(VentasContext)
+  const { stateCliente: { clientes }, getClientesContext } = useContext(ClientesContext)
+  
   useEffect(() => {
     const cargar = () => {
       getUsuarios() // llamando a la funcion para obtener los usuarios
       getStocksContext() // llamando a la funcion para obtener los stocks
       getPedidosContext() // llamando a la funcion para obtener los pedidos
+      getVentasContext() // llamando a la funcion para obtener las ventas
+      getClientesContext() // llamando a la funcion para obtener los clientes
     }
     cargar()
   }, [])
+  
   const stocksContados = stocks.map((stock) => stock.cantidad).reduce((a, b) => a + b, 0) // sumando los stocks
   
   return (
@@ -85,11 +93,11 @@ export const ListaDeOpciones = () => {
                 
                 <div className="row">
                   <div className="col-md-8">
-                    <h4>Usuarios</h4>
+                    <h4>Clientes Registrados</h4>
                     <p>Total</p>
                   </div>
                   <div className="col-md-4 d-flex align-items-end justify-content-end">
-                    <h3 className="p-0 m-0">{usuariosContados ? usuariosContados : 0}</h3>
+                    <h3 className="p-0 m-0">{clientes.length}</h3>
                   </div>
                 </div>
               </div>
@@ -127,7 +135,7 @@ export const ListaDeOpciones = () => {
                     <p>Total</p>
                   </div>
                   <div className="col-md-4 d-flex align-items-end justify-content-end">
-                    <h3 className="p-0 m-0">0</h3>
+                    <h3 className="p-0 m-0">{ventas.length}</h3>
                   </div>
                 </div>
               </div>

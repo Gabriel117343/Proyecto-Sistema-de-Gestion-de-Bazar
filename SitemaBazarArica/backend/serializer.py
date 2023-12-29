@@ -65,7 +65,7 @@ class DescuentoSerializer(serializers.ModelSerializer):
 class VentaSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Venta para serializar los datos
         model = Venta
-        fields = '__all__'
+        fields = ['id', 'cliente', 'total', 'fecha_venta']
 class SeccionSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Seccion para serializar los datos
         model = Seccion
@@ -73,6 +73,7 @@ class SeccionSerializer(serializers.ModelSerializer):
 class MovimientoSerializer(serializers.ModelSerializer):
     class Meta: # metadatos del modelo Movimiento para serializar los datos
         model = Movimiento
+
         fields = '__all__'
 
 class ProductoSerializer(serializers.ModelSerializer):
