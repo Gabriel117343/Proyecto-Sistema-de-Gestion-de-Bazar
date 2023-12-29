@@ -13,7 +13,6 @@ export const LoginProvider = ({ children }) => {
     loading: false,
     isAuth: false
   }
-
   const [stateLogin, dispatch] = useReducer(LoginReducer, initialState)
   // Funciones para los usuarios que se van a usar en los componentes que esten dentro del contexto de los usuarios (UsuariosProvider)
 
@@ -24,6 +23,7 @@ export const LoginProvider = ({ children }) => {
     try {
       const res = await login(usuario) // res para referenciarse al response del servidor
       console.log(res.data)
+      console.log(res.data.token)
       if (res.status === 200) {
         const data = res.data.token
         // Guarda el token en el localStorage

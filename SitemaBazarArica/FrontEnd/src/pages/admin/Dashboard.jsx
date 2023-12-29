@@ -3,6 +3,7 @@ import { FcShop } from "react-icons/fc"
 import { ListaDeOpciones } from '../../components/admin/dashboard/ListaDeOpciones'
 import { StocksProvider } from '../../context/StocksContext'
 import { PedidosProvider } from '../../context/PedidosContext'
+import { Grafico } from '../../components/admin/dashboard/Grafico'
 import './Pages.css'
 export const Dashboard = () => {
 
@@ -22,6 +23,12 @@ export const Dashboard = () => {
         <PedidosProvider>
           <StocksProvider>
             <ListaDeOpciones />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <Grafico />
 
           </StocksProvider>
 

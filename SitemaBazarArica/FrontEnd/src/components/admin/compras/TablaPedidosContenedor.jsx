@@ -5,16 +5,19 @@ import Swal from 'sweetalert2'
 import { ValidarPedidos } from './TablaPedidos'
 import { debounce } from 'lodash'
 import { FormOrdenCompra } from './FormOrdenCompra'
+import { StocksContext } from '../../../context/StocksContext'
+import { Recibir } from './Recibir'
 export const TablaPedidosContenedor = () => {
   const [pedidoBuscado, setPedidoBuscado] = useState(null) // Nuevo estado para el input de busqueda
-  const { statePedido: { pedidos }, getPedidosContext, eliminarPedidoContext } = useContext(PedidosContext)
+  const { statePedido: { pedidos }, getPedidosContext, eliminarPedidoContext, recibirPedidoContext } = useContext(PedidosContext)
+  const { stateStock: { stocks }, recibirStockContext } = useContext(StocksContext)
   const [formularioActivo, setFormularioActivo] = useState(false) // Nuevo estado para la modal de registro
   useEffect(() => {
     const cargar = () => {
       getPedidosContext() // se ejecuta la funcion getProductos del contexto de los productos
     }
     cargar()
-  }, [])
+  }, [formularioActivo, pedidos]) // se ejecuta la funcion cargar al renderizar el componente
   const eliminarPedido = (id) => {
     console.log(id)
     async function confirmar() {
@@ -64,6 +67,60 @@ export const TablaPedidosContenedor = () => {
   const imprimirTabla = () => {
     print()
   }
+  const recibirPedido = async (pedido) => {
+    // swal para confirmar que se recibira el pedido
+    if (pedido.estado === 'recibido') {
+      Swal.fire({
+        title: 'Pedido Recibido',
+        text: 'El pedido ya ha sido recibido',
+        icon: 'info',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6', //
+      })
+      return
+    }
+    const aceptar = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Se recibira el pedido seleccionado, no se podra deshacer esta acción',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, recibir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#3085d6', //
+      cancelButtonColor: '#d33'
+    })
+    if (!aceptar.isConfirmed) return // si no se confirma la accion se cancela la funcion
+    
+    
+    const { success, message } = await recibirPedidoContext(pedido.id)
+    if (success) {
+      Swal.fire({
+        title: 'Pedido Recibido',
+        text: 'El pedido ha sido recibido exitosamente',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6', //
+      })
+
+      for (let i = 0; i < pedido.productos.length; i++) { // agrega el stock a cada producto del pedido
+        const producto = pedido.productos[i];
+        const stock = stocks.find(stock => stock.producto.id === producto.id) // busca el stock del producto
+        const cantidad = producto.cantidad
+        await recibirStockContext(stock.id, cantidad)
+        
+        
+      }
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: message,
+        icon: 'error',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6', //
+        
+      })
+    }
+  }
   return (
      formularioActivo ?
      (
@@ -83,7 +140,7 @@ export const TablaPedidosContenedor = () => {
             <button className='btn btn-outline-primary' onClick={imprimirTabla}><i class="bi bi-printer"></i></button>
           </div>
         </div>
-        <ValidarPedidos listaPedidos={pedidos} borrarPedido={eliminarPedido} filtro={pedidoBuscado} />
+        <ValidarPedidos listaPedidos={pedidos} borrarPedido={eliminarPedido} filtro={pedidoBuscado} recibirPedido={recibirPedido}/>
         
       </>
      )

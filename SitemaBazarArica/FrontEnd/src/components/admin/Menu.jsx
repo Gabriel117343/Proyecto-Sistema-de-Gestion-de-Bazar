@@ -45,6 +45,11 @@ export const Menu = ({ children }) => {
       icon: <i class="bi bi-cart4"></i>
     },
     {
+      path: '/admin/punto-venta',
+      name: 'Punto de Venta',
+      icon: <i class="bi bi-shop-window"></i>
+    },
+    {
   
       name: 'Mantenimiento',
 

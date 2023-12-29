@@ -1,0 +1,26 @@
+.productos {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+.producto {
+ 
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  background: rgb(255, 255, 255);
+  max-width: 270px;
+  
+  
+}
+.ul-carrito::after {
+  content: "";
+  display: block;
+  border: 1px solid #ccc;
+}

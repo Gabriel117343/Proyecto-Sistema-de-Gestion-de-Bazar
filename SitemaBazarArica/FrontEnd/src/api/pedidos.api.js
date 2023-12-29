@@ -42,3 +42,12 @@ export const updatePedido = (id, pedido, token) => {
     }
   })
 }
+// API personalizada para cambiar el estado del pedido a recibido
+export const recibirPedido = (id, token) => {
+  
+  return pedidosApi.put(`/${id}/recibir/`, {}, {
+    headers: {
+      Authorization: `Token ${token}`
+    }
+  })
+}
