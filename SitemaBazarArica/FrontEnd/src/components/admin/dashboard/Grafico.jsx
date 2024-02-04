@@ -20,7 +20,7 @@ export const Grafico = () => {
     ...venta,
     total: Number(venta.total),
     fecha_venta: new Date(venta.fecha_venta)
-  }));
+  }))
 
   // Filtrar las ventas de este mes
   const now = new Date();
@@ -29,10 +29,11 @@ export const Grafico = () => {
   const ventasEsteMes = data.filter(venta => {
     return venta.fecha_venta.getMonth() === thisMonth && venta.fecha_venta.getFullYear() === thisYear;
   });
-
+  
+  
   // Calcular el ingreso total de este mes
   const ingresoTotal = ventasEsteMes.reduce((total, venta) => total + venta.total, 0);
-
+  
   return (
     <div className="row">
       <div className="col-md-6">

@@ -39,9 +39,9 @@ from datetime import datetime, time # para saber la fecha actual
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 from django.db.models import F
+
+
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
-
-
 
 @api_view(['GET'])
 def get_csrf_token(request):

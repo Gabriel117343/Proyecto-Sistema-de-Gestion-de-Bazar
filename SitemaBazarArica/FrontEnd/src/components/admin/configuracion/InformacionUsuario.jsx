@@ -1,7 +1,7 @@
 
 import './configuracion.css'
 export const InformacionUsuario = ({usuario, usuarioImagen}) => {
-  
+
  console.log(usuarioImagen)
   return (
     <article className='row ps-5'>
