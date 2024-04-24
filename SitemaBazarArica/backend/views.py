@@ -247,6 +247,7 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
     # .partial_update(): Para actualizar parcialmente un objeto existente (PATCH)
     # .destroy(): Para eliminar un objeto existente (DELETE)
     # Por lo tanto, puedes realizar operaciones CRUD en el modelo Usuario a través de esta vista.
+    # https://github.com/Gabriel117343
 
 class ProveedorView(viewsets.ModelViewSet):
     serializer_class = ProveedorSerializer
