@@ -97,3 +97,4 @@ class SeccionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seccion
         fields = '__all__'
+# Desarrollador https://github.com/Gabriel117343
