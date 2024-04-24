@@ -86,3 +86,4 @@ export const FormRegistroProveedores = ({ cerrarModal }) => {
 //     # Otros campos relacionados con el proveedor
 //     def __str__(self):
 //         return self.nombre
+// https://github.com/Gabriel117343
