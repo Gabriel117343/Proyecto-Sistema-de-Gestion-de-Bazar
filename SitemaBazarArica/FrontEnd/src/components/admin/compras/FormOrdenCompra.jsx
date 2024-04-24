@@ -36,7 +36,8 @@ export const FormOrdenCompra = ({ volver }) => {
       // codigo es del los pedidos empieza por PO-0001 y se va incrementando a PO-0002, etc..
       // dependiendo del numero final de la lista de pedidos es decier el 1 de PO-0001, el 2 de PO-0002, etc..
       // se obtiene el ultimo pedido de la lista de pedidos
-      // para generar el codigo del nuevo pedido se obtiene el ultimo pedido de la lista de pedidos
+      // para generar el codigo del nuevo pedido se obtiene el ultimo pedido de la lista de pedidos 
+      // https://github.com/Gabriel117343
       if (pedidos.length ===  0) { // si no hay pedidos se genera el codigo PO-0001
         setCodigoPedido('PO-0001')
         return // se retorna para que no se ejecute el codigo de abajo, porque si no hay pedidos no se puede obtener el ultimo pedido
