@@ -18,10 +18,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Encuentra el repositorio en https://github.com/Gabriel117343
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+https://github.com/Gabriel117343
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-osl4skyhoi3(k!+po&mupg(j0*$8qo+ch!0_y56v5*hg+dfl&q'
-
+# Desarrollador https://github.com/Gabriel117343
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
