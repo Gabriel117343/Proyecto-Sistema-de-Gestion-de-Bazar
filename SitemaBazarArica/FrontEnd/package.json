@@ -9,6 +9,12 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "keywords": [
+    "node.js",
+    "proyecto",
+  ],
+  "author": "full name <Gabriel Soliz M.> https://github.com/Gabriel117343",
+  "licence": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",

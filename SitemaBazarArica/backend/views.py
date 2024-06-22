@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from .serializer import UsuarioSerializer, ClienteSerializer, ProveedorSerializer, ProveedorSerializer, ProductoSerializer, PedidoSerializer, ProductoPedidoSerializer, DescuentoSerializer, VentaSerializer, SeccionSerializer, MovimientoSerializer, StockSerializer
 from .models import Usuario, Producto, Proveedor, Cliente, Pedido, ProductoPedido, Descuento, Venta, Seccion, Movimiento, Stock
-
+# https://github.com/Gabriel117343
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt, csrf_protect, ensure_csrf_cookie
 from django.http import JsonResponse
@@ -39,9 +39,9 @@ from datetime import datetime, time # para saber la fecha actual
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 from django.db.models import F
+
+
 User = get_user_model() # esto es para obtener el modelo de usuario que se está utilizando en el proyecto
-
-
 
 @api_view(['GET'])
 def get_csrf_token(request):
@@ -247,6 +247,7 @@ class UsuarioView(viewsets.ModelViewSet): # este método es para listar, crear, 
     # .partial_update(): Para actualizar parcialmente un objeto existente (PATCH)
     # .destroy(): Para eliminar un objeto existente (DELETE)
     # Por lo tanto, puedes realizar operaciones CRUD en el modelo Usuario a través de esta vista.
+    # https://github.com/Gabriel117343
 
 class ProveedorView(viewsets.ModelViewSet):
     serializer_class = ProveedorSerializer

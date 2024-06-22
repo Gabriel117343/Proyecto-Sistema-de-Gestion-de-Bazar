@@ -104,3 +104,4 @@ export const ValidarStocks = ({ listaStocks, filtro }) => {
       : <SinStocks />
   )
 }
+// Repositorio https://github.com/Gabriel117343

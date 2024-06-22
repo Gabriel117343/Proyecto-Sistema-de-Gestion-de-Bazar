@@ -28,8 +28,8 @@ export const token = async () => {
 }
 export const login = async (usuario) => {
   const csrftoken = await token() // Obtener el token CSR
-  console.log('Logeandose...')
   console.log(csrftoken)
+  console.log('Logeandose...')
   return usuarioLoginApi.post('/', usuario, {
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -39,7 +39,6 @@ export const login = async (usuario) => {
   })
 }
 export const logout = async (token) => {
-
   return usuarioLogoutApi.post('/', {}, {
     headers: {
       Authorization: `Token ${token}`	 
@@ -51,6 +50,7 @@ export const getUser = async (token) => {
   return usuarioGetApi.get('/', {
     headers: {
       Authorization: `Token ${token}`
-    }
+    },
+    timeout: 3000 // el maximo de tiempo que se espera la respuesta es de 3 segundos de lo contrario se cancela la peticion
   })
 }
