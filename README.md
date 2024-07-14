@@ -1,9 +1,9 @@
 >*** Proyecto de Integración 2023 ***💻
 > [!NOTE]
 > Este es un Proyecto de Sistema de Gestión para un Bazar, desarrollado para presentar como proyecto de integración en Inacap.
-### Django - 
-<img src="https://img.icons8.com/ios/452/django.png" alt="Django Icon" width="50" height="50">
-### React
+
+> Consiste en la Gestión de usuarios, productos y ventas de un bazar, a través de las funciónalidades del sistema.
+> Para ello, el Sistema  Registra ventas | usuarios | proveedores | productos | secciónes | clientes |
 <img src="https://img.icons8.com/ios/452/react.png" alt="React Icon" width="50" height="50">
 > [!TIP]
 > La versión publica del proyecto es la 	`#0969DA`1.2 2023 (este repositorio) - versión actual 2024 	`#0969DA`1.8 (privado)
