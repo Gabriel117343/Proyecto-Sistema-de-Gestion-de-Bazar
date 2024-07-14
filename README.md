@@ -2,13 +2,13 @@
 
 > [!NOTE]
 > **Nota:** Este es un Proyecto de Sistema de Gestión para un Bazar, desarrollado para presentar como proyecto de integración en Inacap.
-> 
+
 > Consiste en la gestión de usuarios, productos y ventas de un bazar, a través de las funcionalidades del sistema.
-> 
+
 > El sistema registra ventas, usuarios, proveedores, productos, secciones, clientes, etc.
 
 > [!TIP]
-> **Tip:** La versión pública del proyecto es la `#0969DA` **1.2 2023** (este repositorio) - versión actual 2024 `#0969DA` **1.8** (privado).
+> **Tip:** La versión pública del proyecto es la <span style="color:#0969DA">**1.2 2023**</span> (este repositorio) - versión actual 2024 <span style="color:#0969DA">**1.8**</span> (privado)
 
 # Versión Actual img 
 ![capturaSistemaVentas](https://github.com/user-attachments/assets/a21a5f93-e77a-4c0b-8821-e4a7457db28d)
