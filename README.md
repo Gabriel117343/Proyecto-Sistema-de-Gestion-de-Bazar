@@ -1,12 +1,15 @@
->*** Proyecto de Integración 2023 ***💻
-> [!NOTE]
-> Este es un Proyecto de Sistema de Gestión para un Bazar, desarrollado para presentar como proyecto de integración en Inacap.
+> ### ***Proyecto de Integración 2023*** 💻
 
-> Consiste en la Gestión de usuarios, productos y ventas de un bazar, a través de las funciónalidades del sistema.
-> Para ello, el Sistema  Registra ventas | usuarios | proveedores | productos | secciónes | clientes |
-<img src="https://img.icons8.com/ios/452/react.png" alt="React Icon" width="50" height="50">
+> [!NOTE]
+> **Nota:** Este es un Proyecto de Sistema de Gestión para un Bazar, desarrollado para presentar como proyecto de integración en Inacap.
+> 
+> Consiste en la gestión de usuarios, productos y ventas de un bazar, a través de las funcionalidades del sistema.
+> 
+> El sistema registra ventas, usuarios, proveedores, productos, secciones, clientes, etc.
+
 > [!TIP]
-> La versión publica del proyecto es la 	`#0969DA`1.2 2023 (este repositorio) - versión actual 2024 	`#0969DA`1.8 (privado)
+> **Tip:** La versión pública del proyecto es la `#0969DA` **1.2 2023** (este repositorio) - versión actual 2024 `#0969DA` **1.8** (privado).
+
 # Versión Actual img 
 ![capturaSistemaVentas](https://github.com/user-attachments/assets/a21a5f93-e77a-4c0b-8821-e4a7457db28d)
 
